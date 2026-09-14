@@ -1,7 +1,9 @@
 import { log } from './log.js';
 
 const DISCORD_API = 'https://discord.com/api/v10';
-const MAX_FILES_PER_MESSAGE = 10;
+// One flyer per message: Discord shows a lone attachment at full width, but shrinks
+// several attachments in one message into small tiles that cannot be read.
+const MAX_FILES_PER_MESSAGE = 1;
 // Discord's default upload cap for non-boosted servers.
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
 
@@ -11,10 +13,10 @@ function chunk(arr, size) {
   return out;
 }
 
-async function postWithRetry(url, init, { fetchImpl = fetch, attempts = 5 } = {}) {
+async function requestWithRetry(url, init, { fetchImpl = fetch, attempts = 5, okStatuses = [] } = {}) {
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     const res = await fetchImpl(url, init);
-    if (res.ok) return res;
+    if (res.ok || okStatuses.includes(res.status)) return res;
 
     if (res.status === 429) {
       let wait = 2000;
@@ -42,13 +44,46 @@ async function postWithRetry(url, init, { fetchImpl = fetch, attempts = 5 } = {}
   throw new Error('Discord request failed after retries');
 }
 
+function authHeaders(config) {
+  const { webhookUrl, botToken } = config.discord;
+  return webhookUrl ? {} : { Authorization: `Bot ${botToken}` };
+}
+
+function createEndpoint(config) {
+  const { webhookUrl, channelId } = config.discord;
+  if (webhookUrl) return `${webhookUrl}${webhookUrl.includes('?') ? '&' : '?'}wait=true`;
+  return `${DISCORD_API}/channels/${channelId}/messages`;
+}
+
+function messageEndpoint(config, messageId) {
+  const { webhookUrl, channelId } = config.discord;
+  // Webhooks may edit and delete their own messages at <webhook url>/messages/<id>.
+  if (webhookUrl) return `${webhookUrl.replace(/\?.*$/, '')}/messages/${messageId}`;
+  return `${DISCORD_API}/channels/${channelId}/messages/${messageId}`;
+}
+
+// Discord identifies attachments in its response by filename, so make sure no two
+// files in one message share a name.
+function uniqueFilenames(batch) {
+  const used = new Set();
+  return batch.map((img) => {
+    let name = img.filename;
+    for (let i = 2; used.has(name); i += 1) {
+      name = img.filename.replace(/(\.[a-z0-9]{3,4})?$/i, `-${i}$1`);
+    }
+    used.add(name);
+    return { ...img, filename: name };
+  });
+}
+
 /**
- * Post images to Discord as file attachments, in batches of up to 10 per message.
- * images: [{ buffer, filename, contentType, alt, heading, url }]
+ * Post images to Discord as file attachments, one message per image, captioned with
+ * the heading / alt text found next to it on the page.
+ * images: [{ buffer, filename, contentType, alt, heading, url, hash }]
+ * Returns [{ hash, url, messageId, attachmentId }] so the caller can later remove
+ * individual images again.
  */
 export async function postImages({ config, images, content, fetchImpl = fetch }) {
-  const { webhookUrl, botToken, channelId } = config.discord;
-
   const usable = [];
   for (const img of images) {
     if (img.buffer.length > MAX_FILE_BYTES) {
@@ -59,13 +94,18 @@ export async function postImages({ config, images, content, fetchImpl = fetch })
     }
   }
 
+  const results = [];
   const batches = chunk(usable, MAX_FILES_PER_MESSAGE);
   for (let i = 0; i < batches.length; i += 1) {
-    const batch = batches[i];
+    const batch = uniqueFilenames(batches[i]);
     const form = new FormData();
 
     const lines = [];
     if (i === 0 && content) lines.push(content);
+    for (const img of batch) {
+      const caption = [img.heading, img.alt].filter(Boolean).join(" - ");
+      if (caption) lines.push(caption);
+    }
     const links = batch.filter((b) => b.linkOnly).map((b) => b.url);
     if (links.length) lines.push(...links);
 
@@ -85,17 +125,79 @@ export async function postImages({ config, images, content, fetchImpl = fetch })
     };
     form.append('payload_json', JSON.stringify(payload));
 
-    let url;
-    const headers = {};
-    if (webhookUrl) {
-      url = `${webhookUrl}${webhookUrl.includes('?') ? '&' : '?'}wait=true`;
-    } else {
-      url = `${DISCORD_API}/channels/${channelId}/messages`;
-      headers.Authorization = `Bot ${botToken}`;
+    const res = await requestWithRetry(
+      createEndpoint(config),
+      { method: 'POST', headers: authHeaders(config), body: form },
+      { fetchImpl },
+    );
+
+    let message = null;
+    try {
+      message = await res.json();
+    } catch {
+      message = null;
+    }
+    const attachmentIdByName = new Map((message?.attachments ?? []).map((a) => [a.filename, String(a.id)]));
+    if (!message?.id) log.warn('Discord did not return a message id; these images cannot be removed automatically later');
+
+    for (const img of batch) {
+      results.push({
+        hash: img.hash,
+        url: img.url,
+        messageId: message?.id ? String(message.id) : null,
+        attachmentId: img.linkOnly ? null : (attachmentIdByName.get(img.filename) ?? null),
+      });
+    }
+    log.info(`Posted ${attachments.length} image(s) to Discord (batch ${i + 1}/${batches.length})`);
+  }
+  return results;
+}
+
+/**
+ * Take images that are no longer on the site out of Discord.
+ * stale: state entries to remove. keep: state entries that remain current.
+ * A message loses just the outdated attachments, or is deleted outright once
+ * nothing current is left in it.
+ */
+export async function removeImages({ config, stale, keep, fetchImpl = fetch }) {
+  const headers = authHeaders(config);
+
+  const byMessage = new Map();
+  for (const entry of stale) {
+    if (!entry.messageId) {
+      log.warn(`Cannot remove ${entry.url} from Discord automatically (posted before message tracking); delete it by hand`);
+      continue;
+    }
+    if (!byMessage.has(entry.messageId)) byMessage.set(entry.messageId, []);
+    byMessage.get(entry.messageId).push(entry);
+  }
+
+  for (const [messageId, entries] of byMessage) {
+    const remaining = keep.filter((e) => e.messageId === messageId);
+    const url = messageEndpoint(config, messageId);
+
+    if (remaining.length === 0) {
+      const res = await requestWithRetry(url, { method: 'DELETE', headers }, { fetchImpl, okStatuses: [404] });
+      log.info(`Deleted Discord message holding ${entries.length} outdated image(s)${res.status === 404 ? ' (already gone)' : ''}`);
+      continue;
     }
 
-    await postWithRetry(url, { method: 'POST', headers, body: form }, { fetchImpl });
-    log.info(`Posted ${attachments.length} image(s) to Discord (batch ${i + 1}/${batches.length})`);
+    if (remaining.some((e) => !e.attachmentId)) {
+      log.warn(`Leaving message ${messageId} untouched: cannot tell its current attachments apart. Remove the outdated image(s) by hand.`);
+      continue;
+    }
+
+    const body = JSON.stringify({ attachments: remaining.map((e) => ({ id: e.attachmentId })) });
+    const res = await requestWithRetry(
+      url,
+      { method: 'PATCH', headers: { ...headers, 'Content-Type': 'application/json' }, body },
+      { fetchImpl, okStatuses: [404] },
+    );
+    if (res.status === 404) {
+      log.warn(`Message ${messageId} no longer exists in Discord; forgetting its images`);
+    } else {
+      log.info(`Removed ${entries.length} outdated image(s) from a Discord message (${remaining.length} still current)`);
+    }
   }
 }
 

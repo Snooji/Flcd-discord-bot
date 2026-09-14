@@ -1,0 +1,48 @@
+name: Post daily deals
+
+on:
+  schedule:
+    # Every 2 hours. GitHub runs these on UTC and may start a few minutes late.
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
+
+# Never let two runs overlap; they would both try to post and commit state.
+concurrency:
+  group: post-deals
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Check the page and post to Discord
+        run: npm run once
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          POST_ON_FIRST_RUN: 'true'
+
+      - name: Remember what was posted
+        run: |
+          git config user.name "flcd-discord-bot"
+          git config user.email "flcd-discord-bot@users.noreply.github.com"
+          git add data/state.json
+          if git diff --cached --quiet; then
+            echo "State unchanged; nothing to commit"
+          else
+            git commit -m "Update posted-deals state [skip ci]"
+            git pull --rebase
+            git push
+          fi

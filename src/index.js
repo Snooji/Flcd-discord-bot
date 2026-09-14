@@ -2,7 +2,7 @@ import { loadConfig, validateConfig } from './config.js';
 import { log, setLogLevel } from './log.js';
 import { loadState, saveState, hasSeen, markSeen } from './state.js';
 import { fetchPage, extractImages, downloadImage, filenameFor } from './scrape.js';
-import { postImages, verifyDestination } from './discord.js';
+import { postImages, removeImages, verifyDestination } from './discord.js';
 
 function todayLabel() {
   return new Date().toLocaleDateString('en-US', {
@@ -14,8 +14,10 @@ function todayLabel() {
 }
 
 /**
- * One check: fetch page, find images, download + hash them, post the ones we
- * have not posted before, and persist state. Returns the number posted.
+ * One check: fetch page, find images, download + hash them, take down anything we
+ * posted that has since left the page, post the ones we have not posted before,
+ * and persist state. The channel ends up mirroring what is on the site.
+ * Returns the number posted.
  */
 export async function checkOnce(config, state, { fetchImpl = fetch } = {}) {
   log.debug(`Fetching ${config.dealsUrl}`);
@@ -43,18 +45,23 @@ export async function checkOnce(config, state, { fetchImpl = fetch } = {}) {
   }
 
   const fresh = [];
+  const present = new Set(); // hashes currently on the page
+  const unreachable = new Set(); // URLs we could not download this time
   for (const item of found) {
     let file;
     try {
       file = await downloadImage(item.url, { fetchImpl, referer: config.dealsUrl });
     } catch (err) {
       log.warn(`Could not download ${item.url}: ${err.message}`);
+      unreachable.add(item.url);
       continue;
     }
     if (file.buffer.length < config.minImageBytes) {
       log.debug(`Skipping ${item.url} (${file.buffer.length} bytes < MIN_IMAGE_BYTES)`);
       continue;
     }
+    if (present.has(file.hash)) continue; // same image twice on the page
+    present.add(file.hash);
     if (hasSeen(state, file.hash)) {
       log.debug(`Already posted: ${item.url}`);
       continue;
@@ -66,11 +73,35 @@ export async function checkOnce(config, state, { fetchImpl = fetch } = {}) {
     });
   }
 
+  // Anything we posted earlier that is no longer on the page comes down.
+  // A download hiccup does not count as "gone"; neither does a page with no
+  // images at all, which is far more likely a broken fetch than an empty site.
+  let stale = [];
+  if (found.length === 0) {
+    if (state.seen.length) log.warn('Not removing anything from Discord because the page returned no images at all');
+  } else {
+    stale = state.seen.filter((e) => !present.has(e.hash) && !unreachable.has(e.url));
+  }
+
+  if (stale.length > 0) {
+    if (config.dryRun) {
+      log.info(`[dry-run] Would remove ${stale.length} image(s) no longer on the page:`);
+      for (const e of stale) log.info(`  - ${e.url}`);
+    } else {
+      const staleHashes = new Set(stale.map((e) => e.hash));
+      const keep = state.seen.filter((e) => !staleHashes.has(e.hash));
+      await removeImages({ config, stale, keep, fetchImpl });
+      state.seen = keep;
+      await saveState(config.stateFile, state);
+    }
+  }
+
   const firstRun = !state.initialized;
   const shouldPost = fresh.length > 0 && (!firstRun || config.postOnFirstRun);
 
+  let posted = [];
   if (fresh.length === 0) {
-    log.info('No new deal images');
+    log.info(stale.length ? 'No new deal images' : 'No changes');
   } else if (!shouldPost) {
     log.info(`First run: remembering ${fresh.length} existing image(s) without posting (POST_ON_FIRST_RUN=false)`);
   } else if (config.dryRun) {
@@ -80,11 +111,22 @@ export async function checkOnce(config, state, { fetchImpl = fetch } = {}) {
     const header = firstRun
       ? `**Current deals** - <${config.dealsUrl}>`
       : `**New deals for ${todayLabel()}** - <${config.dealsUrl}>`;
-    await postImages({ config, images: fresh, content: header, fetchImpl });
+    posted = await postImages({ config, images: fresh, content: header, fetchImpl });
   }
 
   if (!config.dryRun) {
-    for (const f of fresh) markSeen(state, { hash: f.hash, url: f.url, alt: f.alt, heading: f.heading });
+    const postedByHash = new Map(posted.map((p) => [p.hash, p]));
+    for (const f of fresh) {
+      const p = postedByHash.get(f.hash);
+      markSeen(state, {
+        hash: f.hash,
+        url: f.url,
+        alt: f.alt,
+        heading: f.heading,
+        messageId: p?.messageId ?? null,
+        attachmentId: p?.attachmentId ?? null,
+      });
+    }
     state.initialized = true;
     state.etag = page.etag;
     state.lastModified = page.lastModified;

@@ -37,7 +37,7 @@ export function loadConfig(argv = process.argv.slice(2)) {
 
   return {
     dealsUrl: env.DEALS_URL?.trim() || 'https://flcannabisdeals.org/todays-florida-dispensary-deals/',
-    pollIntervalMs: num(env.POLL_INTERVAL_MINUTES, 15) * 60 * 1000,
+    pollIntervalMs: num(env.POLL_INTERVAL_MINUTES, 120) * 60 * 1000,
     stateFile: env.STATE_FILE?.trim() || './data/state.json',
     contentSelectors,
     excludePattern: excludeRaw ? new RegExp(excludeRaw, 'i') : null,
