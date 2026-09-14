@@ -19,9 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -29,10 +29,27 @@ jobs:
       - run: npm ci
 
       - name: Check the page and post to Discord
-        run: npm run once
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           POST_ON_FIRST_RUN: 'true'
+        run: |
+          set -o pipefail
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "::error::The DISCORD_WEBHOOK_URL repository secret is empty or not set"
+            exit 1
+          fi
+          if npm run --silent once 2>&1 | tee run.log; then
+            exit 0
+          fi
+          # Surface the failure where it can be read without opening the log.
+          echo "::error::$(grep -E '\[(ERROR|WARN)\]' run.log | tail -n 3 | tr '\n' ' ')"
+          {
+            echo '### Bot output'
+            echo '```'
+            tail -n 40 run.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit 1
 
       - name: Remember what was posted
         run: |
