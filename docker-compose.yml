@@ -1,0 +1,9 @@
+services:
+  flcd-discord-bot:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      STATE_FILE: /app/data/state.json
+    volumes:
+      - ./data:/app/data

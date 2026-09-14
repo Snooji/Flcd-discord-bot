@@ -1,0 +1,17 @@
+# Example systemd unit. Copy to /etc/systemd/system/, edit the paths, then:
+#   sudo systemctl daemon-reload && sudo systemctl enable --now flcd-discord-bot
+[Unit]
+Description=FL Cannabis Deals -> Discord forwarder
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=YOUR_USER
+WorkingDirectory=/path/to/Flcd-discord-bot
+ExecStart=/usr/bin/node src/index.js
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

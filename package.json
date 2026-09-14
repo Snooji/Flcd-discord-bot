@@ -1,0 +1,21 @@
+{
+  "name": "flcd-discord-bot",
+  "version": "1.0.0",
+  "description": "Watches the FL Cannabis Deals daily-deals page and forwards new deal images to a Discord channel",
+  "type": "module",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "once": "node src/index.js --once",
+    "dry-run": "node src/index.js --once --dry-run",
+    "test": "node --test \"test/**/*.test.js\""
+  },
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^1.2.0",
+    "dotenv": "^17.4.2"
+  }
+}
