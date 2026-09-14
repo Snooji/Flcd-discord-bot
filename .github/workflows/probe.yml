@@ -1,0 +1,62 @@
+name: Probe site access
+
+# One-off diagnostic: which ways of reaching the deals site work from a GitHub runner?
+# Run it by hand from the Actions tab; results appear as annotations and in the summary.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Try each route
+        run: |
+          PAGE='https://flcannabisdeals.org/todays-florida-dispensary-deals/'
+          IMG='https://flcannabisdeals.org/wp-content/uploads/2025/09/FL_DailyDeals_Website_FLCannabisDeals-1-1-1.jpg'
+          UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
+          echo '### Probe results' >> "$GITHUB_STEP_SUMMARY"
+          echo '| route | HTTP | bytes |' >> "$GITHUB_STEP_SUMMARY"
+          echo '| --- | --- | --- |' >> "$GITHUB_STEP_SUMMARY"
+
+          report() {
+            # $1 name, $2 http code, $3 bytes
+            echo "::notice::$1 => HTTP $2 ($3 bytes)"
+            echo "| $1 | $2 | $3 |" >> "$GITHUB_STEP_SUMMARY"
+          }
+          probe_curl() {
+            # $1 name, then curl args
+            name="$1"; shift
+            out=$(curl -sL --max-time 20 -o /tmp/body -w '%{http_code}' "$@" 2>/dev/null || echo 000)
+            report "$name" "$out" "$(wc -c < /tmp/body 2>/dev/null || echo 0)"
+          }
+
+          probe_curl "curl plain" "$PAGE"
+          probe_curl "curl chrome-ua" -A "$UA" -H 'Accept: text/html,*/*;q=0.8' -H 'Accept-Language: en-US,en;q=0.9' "$PAGE"
+          probe_curl "curl chrome-ua+sec-headers" -A "$UA" \
+            -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' \
+            -H 'Accept-Language: en-US,en;q=0.9' \
+            -H 'sec-ch-ua: "Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"' \
+            -H 'sec-ch-ua-mobile: ?0' -H 'sec-ch-ua-platform: "Windows"' \
+            -H 'sec-fetch-dest: document' -H 'sec-fetch-mode: navigate' -H 'sec-fetch-site: none' -H 'sec-fetch-user: ?1' \
+            -H 'upgrade-insecure-requests: 1' "$PAGE"
+          probe_curl "curl wp-json page" -A "$UA" 'https://flcannabisdeals.org/wp-json/wp/v2/pages?slug=todays-florida-dispensary-deals&_fields=id,content'
+          probe_curl "curl rest_route page" -A "$UA" 'https://flcannabisdeals.org/?rest_route=/wp/v2/pages&slug=todays-florida-dispensary-deals&_fields=id,content'
+          probe_curl "curl image file" -A "$UA" "$IMG"
+          probe_curl "curl site feed" -A "$UA" 'https://flcannabisdeals.org/feed/'
+          probe_curl "jina reader proxy" "https://r.jina.ai/$PAGE"
+
+          # Same request the bot makes, from node's fetch.
+          node -e '
+            const ua = process.argv[1];
+            fetch(process.argv[2], { headers: { "User-Agent": ua, Accept: "text/html,*/*;q=0.8", "Accept-Language": "en-US,en;q=0.9" } })
+              .then(async (r) => { const t = await r.text(); console.log(`::notice::node fetch chrome-ua => HTTP ${r.status} (${t.length} bytes)`); })
+              .catch((e) => console.log(`::notice::node fetch chrome-ua => ERROR ${e.message}`));
+          ' "$UA" "$PAGE"
+          echo "::notice::runner egress ip => $(curl -s --max-time 10 https://api.ipify.org || echo unknown)"
