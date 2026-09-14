@@ -18,12 +18,42 @@ const LAZY_SRC_ATTRS = [
 ];
 const LAZY_SRCSET_ATTRS = ['data-srcset', 'data-lazy-srcset', 'srcset'];
 
+const JINA_READER = 'https://r.jina.ai/';
+
+function looksLikeChallenge(html) {
+  return /<title>\s*Just a moment/i.test(html) || /Attention Required!\s*\|\s*Cloudflare/i.test(html);
+}
+
+/**
+ * Fetch the page through Jina's reader (r.jina.ai), for sites whose Cloudflare
+ * settings reject datacenter IPs such as GitHub Actions runners. Jina renders the
+ * page in a real browser. Asking for markdown with X-No-Cache forces a fresh render;
+ * the HTML of that render is then available from Jina's cache, and that is what
+ * we parse, so the normal extractor works unchanged.
+ */
+async function fetchPageViaJina(url, { fetchImpl, proxyToken }) {
+  const auth = proxyToken ? { Authorization: `Bearer ${proxyToken}` } : {};
+  const fresh = await fetchImpl(JINA_READER + url, { headers: { ...auth, 'X-No-Cache': 'true' } });
+  if (!fresh.ok) throw new Error(`Fetching ${url} via Jina reader failed: HTTP ${fresh.status}`);
+  await fresh.text().catch(() => '');
+
+  const res = await fetchImpl(JINA_READER + url, { headers: { ...auth, 'X-Return-Format': 'html' } });
+  if (!res.ok) throw new Error(`Fetching ${url} HTML via Jina reader failed: HTTP ${res.status}`);
+  const html = await res.text();
+  if (looksLikeChallenge(html)) {
+    throw new Error(`Jina reader returned a Cloudflare challenge page for ${url} instead of the content`);
+  }
+  return { status: 'ok', html, etag: null, lastModified: null };
+}
+
 /**
  * Fetch the deals page HTML. Uses ETag / Last-Modified when available so an
  * unchanged page costs almost nothing.
  * Returns { status: 'unchanged' } or { status: 'ok', html, etag, lastModified }.
  */
-export async function fetchPage(url, { etag, lastModified, fetchImpl = fetch } = {}) {
+export async function fetchPage(url, { etag, lastModified, fetchImpl = fetch, proxy = '', proxyToken = '' } = {}) {
+  if (proxy === 'jina') return fetchPageViaJina(url, { fetchImpl, proxyToken });
+
   const headers = {
     'User-Agent': USER_AGENT,
     Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -94,6 +124,24 @@ function nearestHeading($, el) {
   return '';
 }
 
+function hostOf(url) {
+  try {
+    return new URL(url).host.replace(/^www\./, '');
+  } catch {
+    return null;
+  }
+}
+
+// An image wrapped in a link to another website is a sponsor banner, not a deal flyer.
+function linksOffSite($, el, baseUrl) {
+  const href = $(el).closest('a').attr('href');
+  if (!href) return false;
+  const target = resolve(baseUrl, href);
+  const pageHost = hostOf(baseUrl);
+  const targetHost = hostOf(target);
+  return Boolean(pageHost && targetHost && targetHost !== pageHost);
+}
+
 function candidateUrlsForImg($, img, base) {
   const urls = [];
   for (const attr of LAZY_SRCSET_ATTRS) {
@@ -125,7 +173,7 @@ function candidateUrlsForImg($, img, base) {
  * Extract deal-image candidates from page HTML.
  * Returns [{ url, alt, heading }] de-duplicated by URL, in page order.
  */
-export function extractImages(html, { baseUrl, contentSelectors = ['body'], excludePattern = null } = {}) {
+export function extractImages(html, { baseUrl, contentSelectors = ['body'], excludePattern = null, skipOffsiteLinks = true } = {}) {
   const $ = cheerio.load(html);
 
   // WordPress lazy-load plugins keep a plain <img> inside <noscript>; unwrap it so it is parsed.
@@ -153,6 +201,7 @@ export function extractImages(html, { baseUrl, contentSelectors = ['body'], excl
     const height = parseInt($(img).attr('height') || '0', 10);
     // Tiny declared dimensions are icons/spacers, not deal flyers.
     if ((width && width < 100) || (height && height < 100)) return;
+    if (skipOffsiteLinks && linksOffSite($, img, baseUrl)) return;
 
     const candidates = candidateUrlsForImg($, img, baseUrl);
     if (!candidates.length) return;

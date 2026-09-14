@@ -31,6 +31,10 @@ jobs:
       - name: Check the page and post to Discord
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          # The site's Cloudflare protection returns 403 to GitHub's network, so the
+          # page HTML is fetched through Jina's reader. Images download directly.
+          PAGE_PROXY: jina
+          JINA_API_KEY: ${{ secrets.JINA_API_KEY }}
           POST_ON_FIRST_RUN: 'true'
         run: |
           set -o pipefail

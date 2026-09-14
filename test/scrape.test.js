@@ -81,3 +81,42 @@ test('downloadImage hashes the bytes', async () => {
   assert.equal(res.hash, '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824');
   assert.equal(res.contentType, 'image/jpeg');
 });
+
+test('extractImages skips images that link out to another website', () => {
+  const doc = `
+    <div class="entry-content">
+      <a href="https://www.trulieve.com/"><img src="/wp-content/uploads/2026/09/sponsor.jpg" alt="Trulieve"></a>
+      <a href="https://flcannabisdeals.org/wp-content/uploads/2026/09/flyer.jpg"><img src="/wp-content/uploads/2026/09/flyer.jpg" alt="flyer"></a>
+      <a href="/some-page/"><img src="/wp-content/uploads/2026/09/internal.jpg" alt="internal"></a>
+      <img src="/wp-content/uploads/2026/09/bare.jpg" alt="bare">
+    </div>`;
+  const found = extractImages(doc, { baseUrl: BASE, contentSelectors: ['.entry-content'] });
+  assert.deepEqual(found.map((f) => f.url.split('/').pop()), ['flyer.jpg', 'internal.jpg', 'bare.jpg']);
+
+  const kept = extractImages(doc, { baseUrl: BASE, contentSelectors: ['.entry-content'], skipOffsiteLinks: false });
+  assert.equal(kept.length, 4);
+});
+
+test('fetchPage via Jina forces a fresh render, then reads the HTML of it', async () => {
+  const calls = [];
+  const fetchImpl = async (url, init) => {
+    calls.push({ url, headers: init.headers });
+    const html = init.headers['X-Return-Format'] === 'html';
+    return { ok: true, status: 200, text: async () => (html ? '<html><body><img src="/x.jpg"></body></html>' : 'Title: page') };
+  };
+  const res = await fetchPage(BASE, { etag: '"abc"', fetchImpl, proxy: 'jina', proxyToken: 'tok' });
+  assert.equal(res.status, 'ok');
+  assert.match(res.html, /x\.jpg/);
+  assert.equal(res.etag, null);
+  assert.equal(calls.length, 2);
+  assert.equal(calls[0].url, `https://r.jina.ai/${BASE}`);
+  assert.equal(calls[0].headers['X-No-Cache'], 'true');
+  assert.equal(calls[0].headers.Authorization, 'Bearer tok');
+  assert.equal(calls[1].headers['X-Return-Format'], 'html');
+  assert.equal(calls[1].headers['If-None-Match'], undefined);
+});
+
+test('fetchPage via Jina rejects a Cloudflare challenge page', async () => {
+  const fetchImpl = async () => ({ ok: true, status: 200, text: async () => '<html><head><title>Just a moment...</title></head></html>' });
+  await assert.rejects(fetchPage(BASE, { fetchImpl, proxy: 'jina' }), /challenge page/);
+});

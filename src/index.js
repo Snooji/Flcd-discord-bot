@@ -25,6 +25,8 @@ export async function checkOnce(config, state, { fetchImpl = fetch } = {}) {
     etag: state.etag,
     lastModified: state.lastModified,
     fetchImpl,
+    proxy: config.pageProxy,
+    proxyToken: config.proxyToken,
   });
 
   if (page.status === 'unchanged') {
@@ -38,6 +40,7 @@ export async function checkOnce(config, state, { fetchImpl = fetch } = {}) {
     baseUrl: config.dealsUrl,
     contentSelectors: config.contentSelectors,
     excludePattern: config.excludePattern,
+    skipOffsiteLinks: config.skipOffsiteLinks,
   });
   log.info(`Found ${found.length} candidate image(s) on the page`);
   if (found.length === 0) {

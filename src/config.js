@@ -35,6 +35,11 @@ export function loadConfig(argv = process.argv.slice(2)) {
     env.EXCLUDE_PATTERN ??
     'logo|icon|avatar|emoji|gravatar|favicon|spinner|placeholder|badge|button|wp-includes|/plugins/|/themes/';
 
+  const pageProxy = (env.PAGE_PROXY?.trim() || '').toLowerCase();
+  if (!['', 'jina'].includes(pageProxy)) {
+    throw new Error(`PAGE_PROXY must be empty or "jina", got "${pageProxy}"`);
+  }
+
   return {
     dealsUrl: env.DEALS_URL?.trim() || 'https://flcannabisdeals.org/todays-florida-dispensary-deals/',
     pollIntervalMs: num(env.POLL_INTERVAL_MINUTES, 120) * 60 * 1000,
@@ -44,6 +49,9 @@ export function loadConfig(argv = process.argv.slice(2)) {
     minImageBytes: num(env.MIN_IMAGE_BYTES, 15000),
     postOnFirstRun: bool(env.POST_ON_FIRST_RUN, true),
     logLevel: env.LOG_LEVEL?.trim() || 'info',
+    pageProxy,
+    proxyToken: env.JINA_API_KEY?.trim() || '',
+    skipOffsiteLinks: bool(env.SKIP_OFFSITE_LINKS, true),
     discord: { webhookUrl, botToken, channelId },
     once: argv.includes('--once'),
     dryRun: argv.includes('--dry-run'),

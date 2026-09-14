@@ -95,11 +95,22 @@ All settings live in `.env` (see `.env.example` for the full list).
 | `EXCLUDE_PATTERN` | Regex; images whose URL or alt text matches are skipped (logos, icons, share buttons...). |
 | `MIN_IMAGE_BYTES` | Images smaller than this are skipped. Raises the bar past icons and tracking pixels. |
 | `POST_ON_FIRST_RUN` | Post the current page contents on the very first run, or just remember them. |
+| `SKIP_OFFSITE_LINKS` | Skip images wrapped in a link to another website. Those are rotating sponsor banners, not deal flyers. |
+| `PAGE_PROXY` | Empty fetches the page directly. `jina` fetches it through Jina's reader, for networks the site's Cloudflare protection blocks (see below). |
+| `JINA_API_KEY` | Optional, raises Jina's rate limit. Not needed at a 2-hour cadence. |
 | `LOG_LEVEL` | `debug` shows every image considered and why it was skipped. |
 
 If the bot reports `Found 0 candidate image(s)`, run with `LOG_LEVEL=debug`, look at the page's HTML
 and adjust `CONTENT_SELECTOR` / `EXCLUDE_PATTERN`. If the site ever starts returning HTTP 403 to the
 bot, the page is behind a bot-blocking CDN and a headless-browser fetch would be needed.
+
+## When the site blocks the bot's network
+
+The site sits behind Cloudflare, which returns HTTP 403 to requests from datacenter networks such as
+GitHub Actions runners (it serves home connections normally). Set `PAGE_PROXY=jina` and the bot fetches
+the page HTML through Jina's reader at r.jina.ai, which renders it in a real browser, then downloads the
+images directly (image files are not blocked). The GitHub Actions workflow already sets this. If Jina is
+ever down the run fails and nothing in Discord is touched; the next scheduled run tries again.
 
 ## Notes on removal
 
