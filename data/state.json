@@ -20,15 +20,6 @@
       "at": "2026-09-14T16:55:15.878Z"
     },
     {
-      "hash": "9a12c4fc3262bb6e0939f1678a7caf15762dff38e27097e1d0b0c6fe93bcf692",
-      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/unnamed-2026-09-13T095004.276.jpg",
-      "alt": "",
-      "heading": "",
-      "messageId": "1549101203366084639",
-      "attachmentId": "1549101202950725712",
-      "at": "2026-09-14T16:55:15.878Z"
-    },
-    {
       "hash": "8b8578297f25c44dd274121440bde2c16a64956472fad539beb5616b5c7e0275",
       "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/IMG_8680.jpg",
       "alt": "",
@@ -101,15 +92,6 @@
       "at": "2026-09-14T16:55:15.878Z"
     },
     {
-      "hash": "58842487808dd260d67d9f9d981dc899ac993ff600372d153b031376c12ab12a",
-      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/goldflower-deals-florida-51.jpg",
-      "alt": "",
-      "heading": "",
-      "messageId": "1549173713843261460",
-      "attachmentId": "1549173713591734362",
-      "at": "2026-09-14T21:43:15.991Z"
-    },
-    {
       "hash": "7809180c4fdab389a8912d6eb5ee5c117c415e1fea0fb217c2ca8bdefc1810d3",
       "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/image-2026-09-15T220948.051.jpg",
       "alt": "",
@@ -152,15 +134,6 @@
       "heading": "",
       "messageId": "1550206245607186522",
       "attachmentId": "1550206245259051079",
-      "at": "2026-09-17T18:06:12.075Z"
-    },
-    {
-      "hash": "d80e81d658f0ca3fb3d83352ee20c69716b5bb19a03ad0a5c7d9658c3fb31ab3",
-      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/image-2026-09-17T111127.112.jpg",
-      "alt": "",
-      "heading": "",
-      "messageId": "1550206248694054943",
-      "attachmentId": "1550206248425885877",
       "at": "2026-09-17T18:06:12.075Z"
     },
     {
@@ -225,9 +198,45 @@
       "messageId": "1550461327141765225",
       "attachmentId": "1550461327250563134",
       "at": "2026-09-18T10:59:46.942Z"
+    },
+    {
+      "hash": "65317404759e2589549f1a26cbfdbcfde97b388203cce4da13965d79d712b979",
+      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/goldflower-deals-florida-52.jpg",
+      "alt": "",
+      "heading": "",
+      "messageId": "1550540450761416717",
+      "attachmentId": "1550540450614738944",
+      "at": "2026-09-18T16:14:13.157Z"
+    },
+    {
+      "hash": "10f872cb8e242dc57db9519cd4a53af3daeb980bca383ced274a8852099e4257",
+      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/unnamed-2026-09-18T102244.005.jpg",
+      "alt": "",
+      "heading": "",
+      "messageId": "1550540453307351130",
+      "attachmentId": "1550540453076541510",
+      "at": "2026-09-18T16:14:13.157Z"
+    },
+    {
+      "hash": "929c345d5cf654b0d5079cd1e1209493db2ccb6d1757f3ab0c7196b07e161282",
+      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/1c242d58b70237ba4bfa3e3bbfdbb563.jpg",
+      "alt": "",
+      "heading": "",
+      "messageId": "1550540455937315038",
+      "attachmentId": "1550540455630995506",
+      "at": "2026-09-18T16:14:13.157Z"
+    },
+    {
+      "hash": "0a49eb5ccfd6518af903d0750acaec586625070b048aaa2ef08763c7086f7fbe",
+      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/IMG_8718.jpg",
+      "alt": "",
+      "heading": "",
+      "messageId": "1550540457967091852",
+      "attachmentId": "1550540457694728233",
+      "at": "2026-09-18T16:14:13.157Z"
     }
   ],
-  "lastCheck": "2026-09-18T10:59:46.942Z",
+  "lastCheck": "2026-09-18T16:14:13.157Z",
   "etag": null,
   "lastModified": null
 }
