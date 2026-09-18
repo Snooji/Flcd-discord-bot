@@ -2,15 +2,6 @@
   "initialized": true,
   "seen": [
     {
-      "hash": "55e025e0cc8bd595f8ecba2d915dd32326b770d9c4e9a326b265f745a86dc1de",
-      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/IMG_8695.jpg",
-      "alt": "",
-      "heading": "",
-      "messageId": "1549101167915696298",
-      "attachmentId": "1549101167538217062",
-      "at": "2026-09-14T16:55:15.878Z"
-    },
-    {
       "hash": "2cf7fc552b3ecab755934c710f3451c940b1fe7fba395513f84b78214f757b97",
       "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/New-Project-2026-09-13T221832.071-1.jpg",
       "alt": "",
@@ -218,16 +209,25 @@
       "at": "2026-09-18T04:18:15.165Z"
     },
     {
-      "hash": "f8da992606a60c54029292de19a6b81dd016c2034d8e0effb2f811c5ed16d653",
-      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/0-15.jpg",
+      "hash": "3fcce89f6a6d78e77f691b8254538f1df9967a46851a5c7d01e3c233361133b6",
+      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/09-18-fl-tru-win-the-weekend-13008022530-web-promo-2.jpg",
       "alt": "",
       "heading": "",
-      "messageId": "1550360279467032586",
-      "attachmentId": "1550360279286546523",
-      "at": "2026-09-18T04:18:15.165Z"
+      "messageId": "1550461323572285521",
+      "attachmentId": "1550461323098194120",
+      "at": "2026-09-18T10:59:46.942Z"
+    },
+    {
+      "hash": "f6555c21c0737d428e2526ed10fd1432518811de674fe1abb7e77ace63961d6e",
+      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/0-16.jpg",
+      "alt": "",
+      "heading": "",
+      "messageId": "1550461327141765225",
+      "attachmentId": "1550461327250563134",
+      "at": "2026-09-18T10:59:46.942Z"
     }
   ],
-  "lastCheck": "2026-09-18T04:18:15.165Z",
+  "lastCheck": "2026-09-18T10:59:46.942Z",
   "etag": null,
   "lastModified": null
 }
