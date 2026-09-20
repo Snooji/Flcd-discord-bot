@@ -20,15 +20,6 @@
       "at": "2026-09-14T16:55:15.878Z"
     },
     {
-      "hash": "8b8578297f25c44dd274121440bde2c16a64956472fad539beb5616b5c7e0275",
-      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/IMG_8680.jpg",
-      "alt": "",
-      "heading": "",
-      "messageId": "1549101214258438214",
-      "attachmentId": "1549101213784473671",
-      "at": "2026-09-14T16:55:15.878Z"
-    },
-    {
       "hash": "3559a23553632a80e184e2e362aa48da8439d6917f2db4403dc8dc73b6d6029e",
       "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/4dc3e5b1cbe9058e4141358045305736.jpg",
       "alt": "",
@@ -164,15 +155,6 @@
       "at": "2026-09-18T16:14:13.157Z"
     },
     {
-      "hash": "1e3b803d43caa3d544072c8009676e7c4f13fcff8ae8883e31001bb57222eee9",
-      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/IMG_8731.jpg",
-      "alt": "",
-      "heading": "",
-      "messageId": "1550916235426791455",
-      "attachmentId": "1550916235137392740",
-      "at": "2026-09-19T17:07:25.584Z"
-    },
-    {
       "hash": "ab4c05dd2ad00435b9cc23e06aa82340cca1045a1b0bf993c91976c78beae196",
       "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/unnamed-2026-09-20T015536.220.jpg",
       "alt": "",
@@ -243,9 +225,27 @@
       "messageId": "1551135722684289064",
       "attachmentId": "1551135722428301382",
       "at": "2026-09-20T07:39:35.369Z"
+    },
+    {
+      "hash": "a55056ab2d431c79c95d33c008c80591727d900f9eef36c87e01e44b356110f9",
+      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/unnamed-2026-09-20T114428.924.jpg",
+      "alt": "",
+      "heading": "",
+      "messageId": "1551282465358880768",
+      "attachmentId": "1551282465086111765",
+      "at": "2026-09-20T17:22:42.870Z"
+    },
+    {
+      "hash": "f134d5f37af34ea50fc5f5a80cbd513b7463af7321959d37cd780aefd31a3eb8",
+      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/IMG_8739.jpg",
+      "alt": "",
+      "heading": "",
+      "messageId": "1551282470769393686",
+      "attachmentId": "1551282470870192221",
+      "at": "2026-09-20T17:22:42.870Z"
     }
   ],
-  "lastCheck": "2026-09-20T12:59:43.972Z",
+  "lastCheck": "2026-09-20T17:22:42.870Z",
   "etag": null,
   "lastModified": null
 }
