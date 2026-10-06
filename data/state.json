@@ -56,15 +56,6 @@
       "at": "2026-09-14T16:55:15.878Z"
     },
     {
-      "hash": "65317404759e2589549f1a26cbfdbcfde97b388203cce4da13965d79d712b979",
-      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/goldflower-deals-florida-52.jpg",
-      "alt": "",
-      "heading": "",
-      "messageId": "1550540450761416717",
-      "attachmentId": "1550540450614738944",
-      "at": "2026-09-18T16:14:13.157Z"
-    },
-    {
       "hash": "f134d5f37af34ea50fc5f5a80cbd513b7463af7321959d37cd780aefd31a3eb8",
       "url": "https://flcannabisdeals.org/wp-content/uploads/2026/09/IMG_8739.jpg",
       "alt": "",
@@ -90,15 +81,6 @@
       "messageId": "1555299213473087548",
       "attachmentId": "1555299212738953297",
       "at": "2026-10-01T19:23:48.831Z"
-    },
-    {
-      "hash": "31302a532d4828a4b8acf0aa3f93d6ebeb9426079776b8a9f2966e6cda4a144c",
-      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/IMG_8824.jpg",
-      "alt": "",
-      "heading": "",
-      "messageId": "1555973945512165436",
-      "attachmentId": "1555973944677371994",
-      "at": "2026-10-03T16:04:57.463Z"
     },
     {
       "hash": "552d575e662ae7394a94e14a10821c8d6044f207c8deb683c6544cb69fe35b32",
@@ -252,9 +234,27 @@
       "messageId": "1556908368273084506",
       "attachmentId": "1556908367904120872",
       "at": "2026-10-06T05:58:01.183Z"
+    },
+    {
+      "hash": "ee876bb09a4f48330a9537480c5b7dd2929962ee4c1a3a6c5956bc6c402f0e9d",
+      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/goldflower-deals-florida-53.jpg",
+      "alt": "",
+      "heading": "",
+      "messageId": "1557111209981903048",
+      "attachmentId": "1557111209633906870",
+      "at": "2026-10-06T19:24:03.074Z"
+    },
+    {
+      "hash": "03fee6a0a6c7939a399e5cb8a1b5b156784cb64e86992c95e0ea77aff85f97b6",
+      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/unnamed-2026-10-06T102721.013.jpg",
+      "alt": "",
+      "heading": "",
+      "messageId": "1557111212460744815",
+      "attachmentId": "1557111211978526802",
+      "at": "2026-10-06T19:24:03.074Z"
     }
   ],
-  "lastCheck": "2026-10-06T13:13:12.658Z",
+  "lastCheck": "2026-10-06T19:24:03.074Z",
   "etag": null,
   "lastModified": null
 }
