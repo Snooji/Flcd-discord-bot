@@ -65,15 +65,6 @@
       "at": "2026-09-20T17:22:42.870Z"
     },
     {
-      "hash": "b09dc2d1c9926776d798728b2fcac24056c648a9e8a8571a05205ceb37cfa4db",
-      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/image-2026-10-01T102101.244.jpg",
-      "alt": "",
-      "heading": "",
-      "messageId": "1555299213473087548",
-      "attachmentId": "1555299212738953297",
-      "at": "2026-10-01T19:23:48.831Z"
-    },
-    {
       "hash": "552d575e662ae7394a94e14a10821c8d6044f207c8deb683c6544cb69fe35b32",
       "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/image-2026-10-04T212343.445.jpg",
       "alt": "",
@@ -234,9 +225,18 @@
       "messageId": "1557804612663115967",
       "attachmentId": "1557804612424179833",
       "at": "2026-10-08T17:19:22.612Z"
+    },
+    {
+      "hash": "12c949e17e5a2c0096108041ac9f66d2a3cbb0c0145c014d77e7fc4686aa995f",
+      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/image-2026-10-08T133408.362.jpg",
+      "alt": "",
+      "heading": "",
+      "messageId": "1557893305973612614",
+      "attachmentId": "1557893305768083476",
+      "at": "2026-10-08T23:11:48.657Z"
     }
   ],
-  "lastCheck": "2026-10-08T17:19:22.612Z",
+  "lastCheck": "2026-10-08T23:11:48.657Z",
   "etag": null,
   "lastModified": null
 }
