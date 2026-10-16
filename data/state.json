@@ -65,15 +65,6 @@
       "at": "2026-10-06T05:58:01.183Z"
     },
     {
-      "hash": "12c949e17e5a2c0096108041ac9f66d2a3cbb0c0145c014d77e7fc4686aa995f",
-      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/image-2026-10-08T133408.362.jpg",
-      "alt": "",
-      "heading": "",
-      "messageId": "1557893305973612614",
-      "attachmentId": "1557893305768083476",
-      "at": "2026-10-08T23:11:48.657Z"
-    },
-    {
       "hash": "72adab488bbcbf55eb38a3d6e17fb512ee6475da393f35e1e53f9d2197f1531f",
       "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/IMG_8925.jpg",
       "alt": "",
@@ -225,9 +216,36 @@
       "messageId": "1560547523645546536",
       "attachmentId": "1560547523423113226",
       "at": "2026-10-16T06:58:43.438Z"
+    },
+    {
+      "hash": "40f731185b18f128145d09e73ec2f4dc13242bfc8c4e8b7511a9f7ae88811f0e",
+      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/IMG_9060.jpg",
+      "alt": "",
+      "heading": "",
+      "messageId": "1560712735455584397",
+      "attachmentId": "1560712735237472387",
+      "at": "2026-10-16T17:55:14.597Z"
+    },
+    {
+      "hash": "9ea56c120e2bdf0d2df926658af1b854c6ddb1994f60613329beb423dc171ed8",
+      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/image-12.jpg",
+      "alt": "",
+      "heading": "",
+      "messageId": "1560712738878259240",
+      "attachmentId": "1560712738387529898",
+      "at": "2026-10-16T17:55:14.597Z"
+    },
+    {
+      "hash": "f4b708dadafaef04901c097419adbd7463f5097a15439b2f8f06e1d02060e083",
+      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/BLUE_LOBSTER_Eighths_GJ_bundle_thumb.jpg",
+      "alt": "",
+      "heading": "",
+      "messageId": "1560712741960818839",
+      "attachmentId": "1560712741701029948",
+      "at": "2026-10-16T17:55:14.597Z"
     }
   ],
-  "lastCheck": "2026-10-16T13:09:19.956Z",
+  "lastCheck": "2026-10-16T17:55:14.597Z",
   "etag": null,
   "lastModified": null
 }
