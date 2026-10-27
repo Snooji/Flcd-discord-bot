@@ -65,15 +65,6 @@
       "at": "2026-10-13T06:30:28.551Z"
     },
     {
-      "hash": "23c9cf2131143c5d328e79ddc9a420cea06edde5b6073f791a3436d7c9fc4eb6",
-      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/IMG_8984.jpg",
-      "alt": "",
-      "heading": "",
-      "messageId": "1559593888392552488",
-      "attachmentId": "1559593888187027466",
-      "at": "2026-10-13T15:49:19.118Z"
-    },
-    {
       "hash": "29d48f0cf8f61a77c204611e4722cef7603c41b85ecdc26ef15c05e585daccad",
       "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/image-2026-10-21T100751.217.jpg",
       "alt": "",
@@ -99,15 +90,6 @@
       "messageId": "1563768169800146985",
       "attachmentId": "1563768169619923024",
       "at": "2026-10-25T04:16:29.629Z"
-    },
-    {
-      "hash": "584c8d00e511cd686ef76c9e4b4a2a60451950297c88f0d44fd31ab9b5d5a20a",
-      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/unnamed-3.webp",
-      "alt": "",
-      "heading": "",
-      "messageId": "1563768179229065367",
-      "attachmentId": "1563768179040329768",
-      "at": "2026-10-25T04:16:29.630Z"
     },
     {
       "hash": "9ce323aa8a2aa10d319ce238301517cfa69b1c4ac938ba776eb783ba4a80f168",
@@ -182,15 +164,6 @@
       "at": "2026-10-27T04:39:28.738Z"
     },
     {
-      "hash": "8180aa7113e42c4378d1991f8a43f022352e11434d507e2ff1aa55ef5dcde9b3",
-      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/10-27-fl-tru-minis-starting-17-13081615136-web-promo.webp",
-      "alt": "",
-      "heading": "",
-      "messageId": "1564498728818053230",
-      "attachmentId": "1564498728629305425",
-      "at": "2026-10-27T04:39:28.738Z"
-    },
-    {
       "hash": "d6151feb59d5bd0b6b96efe1446a6855d6629594e416cb8514acfb0b9344be5e",
       "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/0-15.webp",
       "alt": "",
@@ -261,9 +234,45 @@
       "messageId": "1564498747201953907",
       "attachmentId": "1564498747159748748",
       "at": "2026-10-27T04:39:28.739Z"
+    },
+    {
+      "hash": "001c1e6ddfff9af6db54f86f13053e96909c1a5f5372495fb170a9d113262fb7",
+      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/IMG_9188.jpg",
+      "alt": "",
+      "heading": "",
+      "messageId": "1564698477861281843",
+      "attachmentId": "1564698477760348180",
+      "at": "2026-10-27T17:53:10.277Z"
+    },
+    {
+      "hash": "a59e10dff723eca28d00d72e0a537dee937e77026b180a1bd3a83aa6d0bcabfa",
+      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/unnamed-14.webp",
+      "alt": "",
+      "heading": "",
+      "messageId": "1564698480549564436",
+      "attachmentId": "1564698480272998410",
+      "at": "2026-10-27T17:53:10.277Z"
+    },
+    {
+      "hash": "64f2dcb3cde1cefdb0442379508f466765aa2af8ed17daf328e68acfc47e4e45",
+      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/unnamed-13.webp",
+      "alt": "",
+      "heading": "",
+      "messageId": "1564698483385045114",
+      "attachmentId": "1564698483028398101",
+      "at": "2026-10-27T17:53:10.277Z"
+    },
+    {
+      "hash": "f27f560bd1c39afac3a2c47014524ff97dd781aa47e03bde271251d3702d7cfb",
+      "url": "https://flcannabisdeals.org/wp-content/uploads/2026/10/insa-50-credit-v0-mxdl7dk8luxh1.webp",
+      "alt": "",
+      "heading": "",
+      "messageId": "1564698486744551526",
+      "attachmentId": "1564698486396559430",
+      "at": "2026-10-27T17:53:10.277Z"
     }
   ],
-  "lastCheck": "2026-10-27T11:56:41.355Z",
+  "lastCheck": "2026-10-27T17:53:10.277Z",
   "etag": null,
   "lastModified": null
 }
